@@ -23,9 +23,10 @@ class GalaxyService {
             throw new Forbidden('You cannot edit a galaxy you did not add yourself')
         }
         foundGalaxy.name = editBody.name ? editBody.name : foundGalaxy.name
-        foundGalaxy.stars = editBody.stars ? editBody.stars : foundGalaxy.stars
+        foundGalaxy.stars = editBody.stars ? editBody.stars : foundGalaxy.stars;
 
         await foundGalaxy.save()
+        await foundGalaxy.populate('planetCount creator')
         return foundGalaxy;
     }
 

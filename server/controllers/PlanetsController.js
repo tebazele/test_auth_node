@@ -9,6 +9,8 @@ export class PlanetsController extends BaseController {
             .get('', this.getPlanets)
             .use(Auth0Provider.getAuthorizedUserInfo)
             .post('', this.createPlanet)
+            .put('/:id', this.editPlanet)
+            .delete('/:id', this.deletePlanet)
     }
 
     async createPlanet(req, res, next) {
@@ -29,6 +31,31 @@ export class PlanetsController extends BaseController {
         try {
             const planets = await planetsService.getPlanets();
             return res.send(planets)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async editPlanet(req, res, next) {
+        try {
+            const body = {
+                ...req.body
+            }
+            const userId = req.userInfo.id
+            const planetId = req.params.id
+            const planet = await planetsService.editPlanet(planetId, userId, body)
+            return res.send(planet)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async deletePlanet(req, res, next) {
+        try {
+            const planetId = req.params.id
+            const userId = req.userInfo.id
+            const message = await planetsService.deletePlanet(planetId, userId)
+            return res.send(message)
         } catch (error) {
             next(error)
         }
